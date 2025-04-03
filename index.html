@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autenticação de Usuários</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            text-align: center;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            background-color: #1E90FF;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0B5ED7;
+        }
+        .message {
+            margin-top: 10px;
+            font-weight: bold;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h2>Cadastro de Usuário</h2>
+    <input type="text" id="register-username" placeholder="Nome de usuário">
+    <input type="password" id="register-password" placeholder="Senha">
+    <button onclick="registerUser()">Cadastrar</button>
+    <p id="register-message" class="message"></p>
+
+    <h2>Login</h2>
+    <input type="text" id="login-username" placeholder="Nome de usuário">
+    <input type="password" id="login-password" placeholder="Senha">
+    <button onclick="loginUser()">Login</button>
+    <p id="login-message" class="message"></p>
+
+    <script>
+        async function registerUser() {
+            const username = document.getElementById("register-username").value;
+            const password = document.getElementById("register-password").value;
+            const messageDiv = document.getElementById("register-message");
+
+            try {
+                const response = await fetch("http://127.0.0.1:5000/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    messageDiv.innerText = result.message || "Usuário cadastrado com sucesso!";
+                    messageDiv.style.color = "green";
+                } else {
+                    messageDiv.innerText = result.error || "Erro ao cadastrar usuário.";
+                    messageDiv.style.color = "red";
+                }
+            } catch (error) {
+                messageDiv.innerText = "Erro na requisição.";
+                messageDiv.style.color = "red";
+            }
+        }
+
+        async function loginUser() {
+            const username = document.getElementById("login-username").value;
+            const password = document.getElementById("login-password").value;
+            const messageDiv = document.getElementById("login-message");
+
+            try {
+                const response = await fetch("http://127.0.0.1:5000/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    messageDiv.innerText = result.message || "Login efetuado com sucesso!";
+                    messageDiv.style.color = "green";
+                } else {
+                    messageDiv.innerText = result.error || "Erro no login.";
+                    messageDiv.style.color = "red";
+                }
+            } catch (error) {
+                messageDiv.innerText = "Erro na requisição.";
+                messageDiv.style.color = "red";
+            }
+        }
+    </script>
+</body>
+</html>
